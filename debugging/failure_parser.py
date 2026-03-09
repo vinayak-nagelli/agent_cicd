@@ -108,21 +108,26 @@ def parse_test_failures(output):
 
         print("\nSuspicious Lines Ranking:\n")
         print(ranked_lines)
+        
         line_number, buggy_line = extract_buggy_line(source_function, ranked_lines)
 
         print("\nMost Suspicious Line:")
         print("Line:", line_number)
         print("Code:", buggy_line)
 
+        # Generate LLM prompt
         prompt = build_patch_prompt(
-        function_name,
-        source_function,
-        buggy_line,
-        line_number,
-        test_code,
-        analysis,
-        data_flow
-            )
+            function_name=function_name,
+            function_code=source_function,
+            buggy_line=buggy_line,
+            line_number=line_number,
+            test_code=test_code,
+            ast_analysis=analysis,
+                   data_flow=data_flow,
+           multi_line=True,      # optional, True by default
+            context_lines=2       # optional, number of lines around buggy line
+        )
+
         print("\nGenerated LLM Prompt:\n")
         print(prompt)
 
